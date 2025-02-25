@@ -49,8 +49,8 @@ fun HomeScreen(modifier: Modifier = Modifier) {
         {
             Text(
                 "Loading list...",
-                Modifier.fillMaxWidth(),
-                textAlign = TextAlign.Center
+                textAlign = TextAlign.Center,
+                modifier = Modifier.fillMaxWidth()
             )
         }
     ) {
