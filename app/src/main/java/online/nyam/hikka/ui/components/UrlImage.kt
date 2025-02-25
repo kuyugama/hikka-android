@@ -11,20 +11,23 @@ import coil3.request.ImageRequest
 @Composable
 fun UrlImage(
     url: String,
+    contentDescription: String,
     modifier: Modifier = Modifier,
-    contentDescription: String = "Web image",
     placeholder: Image? = null,
     fallback: Image? = null,
     contentScale: ContentScale = ContentScale.FillBounds
 ) {
+    val request =
+        ImageRequest
+            .Builder(LocalContext.current)
+            .apply {
+                data(url)
+                placeholder(placeholder)
+                error(fallback)
+            }.build()
+
     AsyncImage(
-        model =
-            ImageRequest
-                .Builder(LocalContext.current)
-                .data(url)
-                .placeholder(placeholder)
-                .error(fallback)
-                .build(),
+        model = request,
         contentDescription = contentDescription,
         contentScale = contentScale,
         modifier = modifier

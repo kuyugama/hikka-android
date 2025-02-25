@@ -68,7 +68,8 @@ fun MangaDetailsModal(
                     ).padding(16.dp, 8.dp)
         ) {
             UrlImage(
-                url = manga.image,
+                manga.image,
+                "Manga image",
                 Modifier
                     .size(236.dp, 330.dp)
                     .clip(MaterialTheme.shapes.extraLarge)
