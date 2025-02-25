@@ -54,9 +54,8 @@ fun MangaDetailsModal(
             verticalArrangement = Arrangement.spacedBy(8.dp),
             modifier =
                 Modifier
-                    .verticalScroll(
-                        rememberScrollState()
-                    ).padding(horizontal = 16.dp)
+                    .verticalScroll(rememberScrollState())
+                    .padding(horizontal = 16.dp)
         ) {
             UrlImage(
                 manga.image,

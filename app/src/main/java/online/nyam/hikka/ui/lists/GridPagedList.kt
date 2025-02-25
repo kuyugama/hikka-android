@@ -6,6 +6,7 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.paging.LoadState
 import androidx.paging.Pager
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemKey
@@ -15,10 +16,15 @@ fun <T : Any> VerticalPagedGrid(
     pager: Pager<Int, T>,
     key: (T) -> Any,
     modifier: Modifier = Modifier,
+    loader: (@Composable () -> Unit)? = null,
     itemPlaceholder: (@Composable () -> Unit)? = null,
     itemContent: @Composable (T) -> Unit
 ) {
     val lazyPagingItems = pager.flow.collectAsLazyPagingItems()
+
+    if (lazyPagingItems.loadState.refresh == LoadState.Loading) {
+        loader?.invoke()
+    }
 
     LazyVerticalGrid(
         columns = GridCells.Adaptive(120.dp),
