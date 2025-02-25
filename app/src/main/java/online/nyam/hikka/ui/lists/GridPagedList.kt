@@ -22,15 +22,14 @@ fun <T : Any> VerticalPagedGrid(
 ) {
     val lazyPagingItems = pager.flow.collectAsLazyPagingItems()
 
-    if (lazyPagingItems.loadState.refresh == LoadState.Loading) {
-        loader?.invoke()
-    }
-
     LazyVerticalGrid(
         columns = GridCells.Adaptive(120.dp),
         modifier = modifier,
         contentPadding = PaddingValues(4.dp)
     ) {
+        if (lazyPagingItems.loadState.refresh == LoadState.Loading) {
+            item { loader?.invoke() }
+        }
         items(lazyPagingItems.itemCount, key = lazyPagingItems.itemKey(key)) {
             val item = lazyPagingItems[it]
 
