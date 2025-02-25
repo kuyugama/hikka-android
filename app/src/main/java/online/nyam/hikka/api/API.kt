@@ -36,7 +36,7 @@ object API {
 
     suspend fun mangaCatalog(
         query: String? = null,
-        sort: List<String> = listOf("created:desc"),
+        sort: List<String> = listOf("start_date:desc"),
         page: Int = 1,
         size: Int = 15
     ): Response<Paginated<MangaShort>> {

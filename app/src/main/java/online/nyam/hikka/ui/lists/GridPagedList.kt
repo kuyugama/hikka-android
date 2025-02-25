@@ -1,8 +1,9 @@
 package online.nyam.hikka.ui.lists
 
-import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -23,7 +24,7 @@ fun <T : Any> VerticalPagedGrid(
 ) {
     val lazyPagingItems = pager.flow.collectAsLazyPagingItems()
 
-    Box(modifier) {
+    Column(modifier) {
         if (lazyPagingItems.loadState.refresh == LoadState.Loading) {
             loader?.invoke()
         }
@@ -39,6 +40,9 @@ fun <T : Any> VerticalPagedGrid(
                 } else {
                     itemPlaceholder?.invoke()
                 }
+            }
+            if (lazyPagingItems.loadState.append == LoadState.Loading) {
+                item(span = { GridItemSpan(this.maxCurrentLineSpan) }) { loader?.invoke() }
             }
         }
     }

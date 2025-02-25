@@ -1,18 +1,14 @@
 package online.nyam.hikka.ui.components
 
 import androidx.compose.foundation.gestures.detectTapGestures
-import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.AssistChip
-import androidx.compose.material3.AssistChipDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
@@ -48,7 +44,9 @@ fun MangaDetailsModal(
 ) {
     ModalBottomSheet(
         onDismissRequest = onDismiss,
-        sheetState = sheetState
+        sheetState = sheetState,
+        modifier = Modifier.fillMaxHeight(),
+        dragHandle = {}
     ) {
         Column(
             verticalArrangement = Arrangement.spacedBy(8.dp),
@@ -56,6 +54,7 @@ fun MangaDetailsModal(
                 Modifier
                     .verticalScroll(rememberScrollState())
                     .padding(horizontal = 16.dp)
+                    .padding(top = 48.dp)
         ) {
             UrlImage(
                 manga.image,
@@ -66,29 +65,18 @@ fun MangaDetailsModal(
                     .align(Alignment.CenterHorizontally)
             )
             Text(
-                "${manga.title} (${manga.year})",
+                if (manga.year != null) "${manga.title} (${manga.year})" else manga.title,
                 style = MaterialTheme.typography.titleLarge,
                 color = MaterialTheme.colorScheme.primary,
                 textAlign = TextAlign.Center,
                 modifier = Modifier.fillMaxWidth()
             )
-            Row(
-                Modifier.horizontalScroll(rememberScrollState()),
-                horizontalArrangement = Arrangement.spacedBy(4.dp)
-            ) {
-                manga.genres.forEach {
-                    AssistChip(
-                        {},
-                        { Text(it.name) },
-                        border = null,
-                        shape = MaterialTheme.shapes.large,
-                        colors =
-                            AssistChipDefaults.assistChipColors().copy(
-                                containerColor = MaterialTheme.colorScheme.secondaryContainer,
-                                labelColor = MaterialTheme.colorScheme.primary
-                            )
-                    )
-                }
+            if (manga.genres.isNotEmpty()) {
+                GenresVerticalComposable(genres = manga.genres)
+            }
+
+            if (manga.synonyms.isNotEmpty()) {
+                Synonyms(synonyms = manga.synonyms)
             }
             CompositionLocalProvider(
                 LocalContentColor provides MaterialTheme.colorScheme.tertiary
