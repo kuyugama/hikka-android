@@ -1,5 +1,3 @@
-@file:OptIn(ExperimentalMaterial3Api::class)
-
 package online.nyam.hikka.ui.components
 
 import androidx.compose.foundation.gestures.detectTapGestures
@@ -25,7 +23,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -42,6 +39,7 @@ import online.nyam.hikka.ui.MDDocument
 import org.commonmark.node.Document
 import org.commonmark.parser.Parser
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MangaDetailsModal(
     manga: Manga,
@@ -58,7 +56,7 @@ fun MangaDetailsModal(
                 Modifier
                     .verticalScroll(
                         rememberScrollState()
-                    ).padding(16.dp, 8.dp)
+                    ).padding(horizontal = 16.dp)
         ) {
             UrlImage(
                 manga.image,
@@ -75,13 +73,14 @@ fun MangaDetailsModal(
                 textAlign = TextAlign.Center,
                 modifier = Modifier.fillMaxWidth()
             )
-            Row(Modifier.horizontalScroll(rememberScrollState()), horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+            Row(
+                Modifier.horizontalScroll(rememberScrollState()),
+                horizontalArrangement = Arrangement.spacedBy(4.dp)
+            ) {
                 manga.genres.forEach {
                     AssistChip(
                         {},
-                        {
-                            Text(it.name, Modifier.padding(vertical = 2.dp))
-                        },
+                        { Text(it.name) },
                         border = null,
                         shape = MaterialTheme.shapes.large,
                         colors =
@@ -96,9 +95,8 @@ fun MangaDetailsModal(
                 LocalContentColor provides MaterialTheme.colorScheme.tertiary
             ) {
                 val root =
-                    remember {
-                        Parser.builder().build().parse(manga.synopsis) as Document
-                    }
+                    Parser.builder().build().parse(manga.synopsis) as Document
+
                 MDDocument(
                     root
                 )
@@ -135,7 +133,10 @@ fun MangaCard(
                 url = manga.image,
                 contentDescription = "Manga image",
                 modifier = Modifier.size(126.dp, 180.dp),
-                placeholder = context.resources.getDrawable(R.drawable.kuyugama, context.theme).asImage()
+                placeholder =
+                    context.resources
+                        .getDrawable(R.drawable.kuyugama, context.theme)
+                        .asImage()
             )
             Column(Modifier.padding(8.dp), verticalArrangement = Arrangement.spacedBy(2.dp)) {
                 Text(
