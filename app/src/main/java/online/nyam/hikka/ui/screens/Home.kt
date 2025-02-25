@@ -4,25 +4,18 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SnackbarHostState
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
@@ -33,6 +26,7 @@ import online.nyam.hikka.api.models.responses.Manga
 import online.nyam.hikka.api.paging.MangaPagingSource
 import online.nyam.hikka.ui.components.MangaCard
 import online.nyam.hikka.ui.components.MangaDetailsModal
+import online.nyam.hikka.ui.components.SearchField
 import online.nyam.hikka.ui.lists.VerticalPagedGrid
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -45,7 +39,7 @@ fun HomeScreen(
 
     var showManga by remember { mutableStateOf<Manga?>(null) }
 
-    var query by remember {
+    var query by rememberSaveable {
         mutableStateOf<String?>(null)
     }
 
@@ -63,47 +57,20 @@ fun HomeScreen(
     }
 
     Column(modifier, verticalArrangement = Arrangement.spacedBy(8.dp)) {
-        var prompt by remember {
-            mutableStateOf("")
-        }
+        SearchField(onPromptUpdate = {
+            query = if (it.length > 2) it else null
+        })
 
-        TextField(
-            value = prompt,
-            onValueChange = {
-                prompt = it
-
-                query =
-                    if (it.length > 2) {
-                        it
-                    } else {
-                        null
-                    }
-            },
-            modifier =
-                Modifier
-                    .padding(horizontal = 16.dp)
-                    .fillMaxWidth(),
-            singleLine = true,
-            placeholder = { Text("Пошуковий запит") },
-            shape = MaterialTheme.shapes.extraLarge,
-            colors =
-                TextFieldDefaults.colors().copy(
-                    focusedIndicatorColor = Color.Transparent,
-                    unfocusedIndicatorColor = Color.Transparent
-                ),
-            leadingIcon = {
-                Icon(
-                    Icons.Filled.Search,
-                    contentDescription = "Search",
-                    modifier = Modifier.padding(start = 8.dp)
-                )
-            }
-        )
         VerticalPagedGrid(
             pager,
             { it.slug },
             loader = {
-                Column(Modifier.fillMaxWidth().padding(vertical = 24.dp), horizontalAlignment = Alignment.CenterHorizontally) {
+                Column(
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 24.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
                     CircularProgressIndicator()
                 }
             }
