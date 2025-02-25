@@ -6,15 +6,11 @@ import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.AssistChip
@@ -38,9 +34,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.paging.Pager
-import androidx.paging.compose.collectAsLazyPagingItems
-import androidx.paging.compose.itemKey
 import coil3.asImage
 import online.nyam.hikka.R
 import online.nyam.hikka.api.models.responses.Manga
@@ -160,33 +153,6 @@ fun MangaCard(
                     color = MaterialTheme.colorScheme.secondary,
                     textAlign = TextAlign.End
                 )
-            }
-        }
-    }
-}
-
-@Composable
-fun MangaList(
-    pager: Pager<Int, MangaShort>,
-    modifier: Modifier = Modifier,
-    onShowDetails: ((String) -> Unit)? = null,
-    onOpen: ((String) -> Unit)? = null
-) {
-    val gridState = rememberLazyGridState()
-
-    val lazyPagingItems = pager.flow.collectAsLazyPagingItems()
-
-    LazyVerticalGrid(
-        columns = GridCells.Adaptive(120.dp),
-        modifier = modifier,
-        contentPadding = PaddingValues(4.dp),
-        state = gridState
-    ) {
-        items(lazyPagingItems.itemCount, key = lazyPagingItems.itemKey { it.slug }) {
-            val item = lazyPagingItems[it]
-
-            if (item != null) {
-                MangaCard(manga = item, onOpen = { onOpen?.invoke(item.slug) }, onShowDetails = { onShowDetails?.invoke(item.slug) })
             }
         }
     }
