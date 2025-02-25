@@ -12,7 +12,7 @@ val Typography =
         bodyLarge =
             TextStyle(
                 fontFamily = FontFamily.Default,
-                fontWeight = FontWeight.Thin,
+                fontWeight = FontWeight.ExtraLight,
                 fontSize = 16.sp,
                 lineHeight = 24.sp,
                 letterSpacing = 0.5.sp
@@ -20,7 +20,7 @@ val Typography =
         bodyMedium =
             TextStyle(
                 fontFamily = FontFamily.Default,
-                fontWeight = FontWeight.Thin,
+                fontWeight = FontWeight.ExtraLight,
                 fontSize = 12.sp,
                 lineHeight = 16.sp,
                 letterSpacing = 0.5.sp
