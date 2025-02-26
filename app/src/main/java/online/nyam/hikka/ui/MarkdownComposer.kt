@@ -128,11 +128,11 @@ fun MDParagraph(
         Box(modifier = modifier.padding(bottom = padding)) {
             val styledText =
                 buildAnnotatedString {
-                    pushStyle(MaterialTheme.typography.bodyLarge.toSpanStyle())
+                    pushStyle(MaterialTheme.typography.bodyMedium.toSpanStyle())
                     appendMarkdownChildren(paragraph, MaterialTheme.colorScheme)
                     pop()
                 }
-            MarkdownText(styledText, MaterialTheme.typography.bodyLarge)
+            MarkdownText(styledText, MaterialTheme.typography.bodyMedium)
         }
     }
 }
@@ -166,12 +166,12 @@ fun MDBulletList(
     MDListItems(bulletList, modifier = modifier) {
         val text =
             buildAnnotatedString {
-                pushStyle(MaterialTheme.typography.bodyLarge.toSpanStyle())
+                pushStyle(MaterialTheme.typography.bodyMedium.toSpanStyle())
                 append("$marker ")
                 appendMarkdownChildren(it, MaterialTheme.colorScheme)
                 pop()
             }
-        MarkdownText(text, MaterialTheme.typography.bodyLarge)
+        MarkdownText(text, MaterialTheme.typography.bodyMedium)
     }
 }
 
@@ -185,12 +185,12 @@ fun MDOrderedList(
     MDListItems(orderedList, modifier) {
         val text =
             buildAnnotatedString {
-                pushStyle(MaterialTheme.typography.bodyLarge.toSpanStyle())
+                pushStyle(MaterialTheme.typography.bodyMedium.toSpanStyle())
                 append("${number++}$delimiter ")
                 appendMarkdownChildren(it, MaterialTheme.colorScheme)
                 pop()
             }
-        MarkdownText(text, MaterialTheme.typography.bodyLarge, modifier)
+        MarkdownText(text, MaterialTheme.typography.bodyMedium, modifier)
     }
 }
 
@@ -240,7 +240,7 @@ fun MDBlockQuote(
         val text =
             buildAnnotatedString {
                 pushStyle(
-                    MaterialTheme.typography.bodyLarge
+                    MaterialTheme.typography.bodyMedium
                         .toSpanStyle()
                         .plus(SpanStyle(fontStyle = FontStyle.Italic))
                 )
