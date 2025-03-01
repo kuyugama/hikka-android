@@ -17,7 +17,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import online.nyam.hikka.ui.components.MangaCard
 import online.nyam.hikka.ui.components.MangaDetailsModal
 import online.nyam.hikka.ui.components.SearchField
-import online.nyam.hikka.ui.lists.VerticalPagedGrid
+import online.nyam.hikka.ui.components.lists.VerticalPagedGrid
 import online.nyam.hikka.ui.viewmodels.HomeScreenViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -38,16 +38,20 @@ fun HomeScreen(
     Column(modifier, verticalArrangement = Arrangement.spacedBy(8.dp)) {
         SearchField(onPromptUpdate = screenModel::updateSearchQuery)
 
-        VerticalPagedGrid(screenState.pager, { it.slug }, loader = {
-            Column(
-                Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 24.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                CircularProgressIndicator()
+        VerticalPagedGrid(
+            screenState.pager,
+            { it.slug },
+            loader = {
+                Column(
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 24.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    CircularProgressIndicator()
+                }
             }
-        }) {
+        ) {
             MangaCard(
                 manga = it,
                 onShowDetails = {

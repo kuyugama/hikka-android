@@ -1,4 +1,4 @@
-package online.nyam.hikka.ui.lists
+package online.nyam.hikka.ui.components.lists
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -42,7 +42,7 @@ fun <T : Any> VerticalPagedGrid(
                 }
             }
             if (lazyPagingItems.loadState.append == LoadState.Loading) {
-                item(span = { GridItemSpan(this.maxCurrentLineSpan) }) { loader?.invoke() }
+                item(span = { GridItemSpan(maxLineSpan) }) { loader?.invoke() }
             }
         }
     }
