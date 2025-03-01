@@ -1,10 +1,8 @@
 package online.nyam.hikka.util
 
-import android.content.res.Resources
 import android.util.Log
-import online.nyam.hikka.R
 
-private val TAG = Resources.getSystem().getString(R.string.app_name)
+private const val TAG = "HikkaApp"
 
 @Suppress("unused")
 class Logger(
