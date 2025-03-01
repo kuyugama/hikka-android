@@ -76,6 +76,15 @@ class HomeScreenViewModel : ViewModel() {
                 is Response.Error -> {
                     onAbort?.invoke(response.abort)
                 }
+
+                is Response.Crash -> {
+                    onAbort?.invoke(
+                        Abort(
+                            "internal:crash",
+                            response.error.message ?: response.error::class.simpleName!!
+                        )
+                    )
+                }
             }
         }
     }

@@ -22,6 +22,7 @@ class MangaPagingSource(
                 )
             }
             is Response.Error -> LoadResult.Error(Throwable(response.abort.message))
+            is Response.Crash -> LoadResult.Error(response.error)
         }
     }
 

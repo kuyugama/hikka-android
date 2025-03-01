@@ -13,6 +13,7 @@ import io.ktor.http.ContentType
 import io.ktor.http.contentType
 import io.ktor.http.isSuccess
 import io.ktor.serialization.kotlinx.json.json
+import kotlinx.io.IOException
 import kotlinx.serialization.json.Json
 import online.nyam.hikka.api.models.Paginated
 import online.nyam.hikka.api.models.Response
@@ -34,36 +35,45 @@ object API {
             }
         }
 
+    private inline fun <T> catchIOException(block: () -> Response<T>): Response<T> =
+        try {
+            block()
+        } catch (e: IOException) {
+            Response.Crash(e)
+        }
+
     suspend fun mangaCatalog(
         query: String? = null,
         sort: List<String> = listOf("start_date:desc"),
         page: Int = 1,
         size: Int = 15
-    ): Response<Paginated<MangaShort>> {
-        val response =
-            client.post("https://api.hikka.io/manga") {
-                parameter("page", page)
-                parameter("size", size)
+    ): Response<Paginated<MangaShort>> =
+        catchIOException {
+            val response =
+                client.post("https://api.hikka.io/manga") {
+                    parameter("page", page)
+                    parameter("size", size)
 
-                contentType(ContentType.Application.Json)
-                setBody(MangaCatalog(query = query, sort = sort))
+                    contentType(ContentType.Application.Json)
+                    setBody(MangaCatalog(query = query, sort = sort))
+                }
+
+            if (!response.status.isSuccess()) {
+                return Response.Error(response.body())
             }
 
-        if (!response.status.isSuccess()) {
-            return Response.Error(response.body())
+            return Response.Success(response.body())
         }
 
-        return Response.Success(response.body())
-    }
+    suspend fun mangaDetails(slug: String): Response<Manga> =
+        catchIOException {
+            val response =
+                client.get("https://api.hikka.io/manga/$slug")
 
-    suspend fun mangaDetails(slug: String): Response<Manga> {
-        val response =
-            client.get("https://api.hikka.io/manga/$slug")
+            if (!response.status.isSuccess()) {
+                return Response.Error(response.body())
+            }
 
-        if (!response.status.isSuccess()) {
-            return Response.Error(response.body())
+            return Response.Success(response.body())
         }
-
-        return Response.Success(response.body())
-    }
 }

@@ -32,6 +32,10 @@ import kotlinx.serialization.json.JsonNames
 )
 
 sealed class Response<T> {
+    data class Crash<T>(
+        val error: Throwable
+    ) : Response<T>()
+
     data class Error<T>(
         val abort: Abort
     ) : Response<T>()
