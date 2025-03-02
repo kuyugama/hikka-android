@@ -10,8 +10,12 @@ import io.ktor.client.request.parameter
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
 import io.ktor.http.ContentType
+import io.ktor.http.Url
+import io.ktor.http.buildUrl
 import io.ktor.http.contentType
+import io.ktor.http.fullPath
 import io.ktor.http.isSuccess
+import io.ktor.http.path
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.io.IOException
 import kotlinx.serialization.json.Json
@@ -21,7 +25,9 @@ import online.nyam.hikka.api.models.requests.MangaCatalog
 import online.nyam.hikka.api.models.responses.Manga
 import online.nyam.hikka.api.models.responses.MangaShort
 
-object API {
+class HikkaAPI(
+    private val baseUrl: Url
+) {
     private val client =
         HttpClient(Android) {
             install(HttpCache)
@@ -33,6 +39,15 @@ object API {
                     }
                 )
             }
+        }
+
+    private operator fun Url.div(other: String) =
+        buildUrl {
+            protocolOrNull = this@div.protocolOrNull
+            host = this@div.host
+            port = this@div.port
+
+            path(this@div.fullPath, other.trimStart('/'))
         }
 
     private inline fun <T> catchIOException(block: () -> Response<T>): Response<T> =
@@ -50,7 +65,7 @@ object API {
     ): Response<Paginated<MangaShort>> =
         catchIOException {
             val response =
-                client.post("https://api.hikka.io/manga") {
+                client.post(baseUrl / "/manga") {
                     parameter("page", page)
                     parameter("size", size)
 
@@ -68,7 +83,7 @@ object API {
     suspend fun mangaDetails(slug: String): Response<Manga> =
         catchIOException {
             val response =
-                client.get("https://api.hikka.io/manga/$slug")
+                client.get(baseUrl / "manga/$slug")
 
             if (!response.status.isSuccess()) {
                 return Response.Error(response.body())
