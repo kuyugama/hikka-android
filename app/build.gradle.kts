@@ -1,9 +1,13 @@
+import com.google.common.math.IntMath.pow
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
     alias(libs.plugins.serialization)
     alias(libs.plugins.compose.compiler)
 }
+
+val appVersionName = "1.2"
 
 android {
     namespace = "online.nyam.hikka"
@@ -14,8 +18,14 @@ android {
         minSdk = 24
         //noinspection OldTargetApi
         targetSdk = 34
-        versionCode = 1
-        versionName = "1.0"
+        versionCode =
+            appVersionName
+                .split(".")
+                .reversed()
+                .mapIndexed { ix, it ->
+                    it.toInt() * (pow(10, ix))
+                }.sum()
+        versionName = appVersionName
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
