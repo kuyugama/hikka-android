@@ -2,15 +2,20 @@ package online.nyam.hikka.api.paging
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
-import online.nyam.hikka.api.API
+import online.nyam.hikka.api.HikkaAPI
 import online.nyam.hikka.api.models.Response
 import online.nyam.hikka.api.models.responses.MangaShort
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 
 class MangaPagingSource(
     private val query: String? = null
-) : PagingSource<Int, MangaShort>() {
+) : PagingSource<Int, MangaShort>(),
+    KoinComponent {
+    private val hikkaApi: HikkaAPI by inject()
+
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, MangaShort> {
-        val response = API.mangaCatalog(query, page = params.key ?: 1, size = params.loadSize)
+        val response = hikkaApi.mangaCatalog(query, page = params.key ?: 1, size = params.loadSize)
         return when (response) {
             is Response.Success -> {
                 val data = response.data

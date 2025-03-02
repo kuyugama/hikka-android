@@ -13,19 +13,19 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import online.nyam.hikka.ui.components.MangaCard
 import online.nyam.hikka.ui.components.MangaDetailsModal
 import online.nyam.hikka.ui.components.SearchField
 import online.nyam.hikka.ui.components.lists.VerticalPagedGrid
 import online.nyam.hikka.ui.viewmodels.HomeScreenViewModel
+import org.koin.compose.viewmodel.koinViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
     snackbarHostState: SnackbarHostState,
     modifier: Modifier = Modifier,
-    screenModel: HomeScreenViewModel = viewModel()
+    screenModel: HomeScreenViewModel = koinViewModel()
 ) {
     val screenState by screenModel.state.collectAsState()
 

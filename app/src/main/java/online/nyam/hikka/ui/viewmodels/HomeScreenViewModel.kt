@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import online.nyam.hikka.api.API
+import online.nyam.hikka.api.HikkaAPI
 import online.nyam.hikka.api.models.Abort
 import online.nyam.hikka.api.models.Response
 import online.nyam.hikka.api.models.responses.Manga
@@ -24,7 +24,9 @@ data class HomeState(
     val pager: Pager<Int, MangaShort> = pagerFor(null)
 )
 
-class HomeScreenViewModel : ViewModel() {
+class HomeScreenViewModel(
+    private val hikkaApi: HikkaAPI
+) : ViewModel() {
     private val _state = MutableStateFlow(HomeState())
     val state = _state.asStateFlow()
 
@@ -63,7 +65,7 @@ class HomeScreenViewModel : ViewModel() {
         }
 
         viewModelScope.launch {
-            when (val response = API.mangaDetails(slug)) {
+            when (val response = hikkaApi.mangaDetails(slug)) {
                 is Response.Success -> {
                     _state.update {
                         it.copy(
