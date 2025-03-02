@@ -9,7 +9,8 @@ import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
 class MangaPagingSource(
-    private val query: String? = null
+    private val query: String? = null,
+    private val pageSize: Int = 15
 ) : PagingSource<Int, MangaShort>(),
     KoinComponent {
     private val hikkaApi: HikkaAPI by inject()
@@ -23,9 +24,14 @@ class MangaPagingSource(
                 LoadResult.Page(
                     data.items,
                     if (data.info.page > 1) data.info.page - 1 else null,
-                    if (data.info.page < data.info.totalPages) data.info.page + 1 else null
+                    if (data.info.page < data.info.totalPages) {
+                        data.info.page + 1 + (params.loadSize / pageSize)
+                    } else {
+                        null
+                    }
                 )
             }
+
             is Response.Error -> LoadResult.Error(Throwable(response.abort.message))
             is Response.Crash -> LoadResult.Error(response.error)
         }

@@ -1,4 +1,4 @@
-package online.nyam.hikka.ui.screens
+package online.nyam.hikka.activities.main.screens
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -13,11 +13,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import online.nyam.hikka.activities.main.viewmodels.HomeScreenViewModel
+import online.nyam.hikka.api.models.responses.MangaShort
 import online.nyam.hikka.ui.components.MangaCard
 import online.nyam.hikka.ui.components.MangaDetailsModal
 import online.nyam.hikka.ui.components.SearchField
 import online.nyam.hikka.ui.components.lists.VerticalPagedGrid
-import online.nyam.hikka.ui.viewmodels.HomeScreenViewModel
 import org.koin.compose.viewmodel.koinViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -25,21 +26,25 @@ import org.koin.compose.viewmodel.koinViewModel
 fun HomeScreen(
     snackbarHostState: SnackbarHostState,
     modifier: Modifier = Modifier,
-    screenModel: HomeScreenViewModel = koinViewModel()
+    screenModel: HomeScreenViewModel = koinViewModel(),
+    onOpenManga: ((MangaShort) -> Unit)? = null
 ) {
     val screenState by screenModel.state.collectAsState()
 
     if (screenState.showDetails) {
-        MangaDetailsModal(manga = screenState.mangaDetails!!) {
-            screenModel.hideDetails()
-        }
+        MangaDetailsModal(
+            manga = screenState.mangaDetails!!,
+            onDismiss = {
+                screenModel.hideDetails()
+            }
+        )
     }
 
     Column(modifier, verticalArrangement = Arrangement.spacedBy(8.dp)) {
         SearchField(onPromptUpdate = screenModel::updateSearchQuery)
 
         VerticalPagedGrid(
-            screenState.pager,
+            screenState.pagingFlow,
             { it.slug },
             loader = {
                 Column(
@@ -59,7 +64,8 @@ fun HomeScreen(
                         snackbarHostState.currentSnackbarData?.dismiss()
                         snackbarHostState.showSnackbar(abort.message)
                     }
-                }
+                },
+                onOpen = { onOpenManga?.invoke(it) }
             )
         }
     }

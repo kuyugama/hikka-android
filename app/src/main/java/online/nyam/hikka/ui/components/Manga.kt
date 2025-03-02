@@ -27,6 +27,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.core.content.res.ResourcesCompat
 import coil3.asImage
 import online.nyam.hikka.R
 import online.nyam.hikka.api.models.responses.Manga
@@ -121,9 +122,9 @@ fun MangaCard(
                 contentDescription = "Manga image",
                 modifier = Modifier.size(126.dp, 180.dp),
                 placeholder =
-                    context.resources
-                        .getDrawable(R.drawable.kuyugama, context.theme)
-                        .asImage()
+                    ResourcesCompat
+                        .getDrawable(context.resources, R.drawable.kuyugama, context.theme)
+                        ?.asImage()
             )
             Column(Modifier.padding(8.dp), verticalArrangement = Arrangement.spacedBy(2.dp)) {
                 Text(

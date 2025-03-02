@@ -9,20 +9,21 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.paging.LoadState
-import androidx.paging.Pager
+import androidx.paging.PagingData
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemKey
+import kotlinx.coroutines.flow.Flow
 
 @Composable
 fun <T : Any> VerticalPagedGrid(
-    pager: Pager<Int, T>,
+    flow: Flow<PagingData<T>>,
     key: (T) -> Any,
     modifier: Modifier = Modifier,
     loader: (@Composable () -> Unit)? = null,
     itemPlaceholder: (@Composable () -> Unit)? = null,
     itemContent: @Composable (T) -> Unit
 ) {
-    val lazyPagingItems = pager.flow.collectAsLazyPagingItems()
+    val lazyPagingItems = flow.collectAsLazyPagingItems()
 
     Column(modifier) {
         if (lazyPagingItems.loadState.refresh == LoadState.Loading) {

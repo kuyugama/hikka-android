@@ -1,9 +1,12 @@
-package online.nyam.hikka.ui.viewmodels
+package online.nyam.hikka.activities.main.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
+import androidx.paging.PagingData
+import androidx.paging.cachedIn
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -15,19 +18,27 @@ import online.nyam.hikka.api.models.responses.Manga
 import online.nyam.hikka.api.models.responses.MangaShort
 import online.nyam.hikka.api.paging.MangaPagingSource
 
-fun pagerFor(query: String?) = Pager(PagingConfig(15)) { MangaPagingSource(query) }
+fun pagerFor(
+    query: String?,
+    pageSize: Int = 15
+) = Pager(PagingConfig(pageSize)) { MangaPagingSource(query, pageSize) }
 
 data class HomeState(
+    val pagingFlow: Flow<PagingData<MangaShort>>,
     val mangaDetails: Manga? = null,
     val showDetails: Boolean = false,
-    val query: String? = null,
-    val pager: Pager<Int, MangaShort> = pagerFor(null)
+    val query: String? = null
 )
 
 class HomeScreenViewModel(
     private val hikkaApi: HikkaAPI
 ) : ViewModel() {
-    private val _state = MutableStateFlow(HomeState())
+    private val _state =
+        MutableStateFlow(
+            HomeState(
+                pagingFlow = pagerFor(null).flow.cachedIn(viewModelScope)
+            )
+        )
     val state = _state.asStateFlow()
 
     /**
@@ -45,7 +56,7 @@ class HomeScreenViewModel(
             _state.update {
                 it.copy(
                     query = formatted,
-                    pager = pagerFor(formatted)
+                    pagingFlow = pagerFor(formatted).flow.cachedIn(viewModelScope)
                 )
             }
         }
